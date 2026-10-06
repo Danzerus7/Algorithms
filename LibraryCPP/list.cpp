@@ -57,6 +57,7 @@ ListItem* list_item_next(ListItem *item)
 ListItem *list_item_prev(ListItem *item)
 {
     return item->prev;
+
 }
 
 ListItem *list_insert(List *list, Data data)
