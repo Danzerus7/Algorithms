@@ -23,7 +23,9 @@ struct CandidateGreater
 };
 
 using GraphType = Graph<int, std::string>;
-using EdgeQueue = std::priority_queue<Candidate, std::vector<Candidate>, CandidateGreater>;
+using CandidateList = std::vector<Candidate>;
+using VisitedVertices = std::unordered_set<std::string>;
+using EdgeQueue = std::priority_queue<Candidate, CandidateList, CandidateGreater>;
 
 bool add_or_lower_edge(GraphType &graph, const std::string &from_vertex, const std::string &to_vertex, int edge_weight)
 {
@@ -35,7 +37,7 @@ bool add_or_lower_edge(GraphType &graph, const std::string &from_vertex, const s
     return true;
 }
 
-void add_candidates(const GraphType &graph, const std::string &current_vertex, const std::unordered_set<std::string> &visited_vertices, EdgeQueue &edge_queue)
+void add_candidates(const GraphType &graph, const std::string &current_vertex, const VisitedVertices &visited_vertices, EdgeQueue &edge_queue)
 {
     GraphType::NeighborIterator neighbor_iterator = graph.neighbors_begin(current_vertex);
     while (neighbor_iterator.hasNext())
@@ -94,9 +96,9 @@ int main(int argc, char *argv[])
 
     const Vector<std::string> vertex_names = graph.vertex_labels();
     const std::string start_vertex = vertex_names.get(0);
-    std::unordered_set<std::string> visited_vertices{start_vertex};
+    VisitedVertices visited_vertices{start_vertex};
     EdgeQueue edge_queue;
-    std::vector<Candidate> tree_edges;
+    CandidateList tree_edges;
     add_candidates(graph, start_vertex, visited_vertices, edge_queue);
 
     while (!edge_queue.empty() && tree_edges.size() + 1 < vertex_count)
@@ -120,4 +122,3 @@ int main(int argc, char *argv[])
         output_file << candidate_edge.from_vertex << " - " << candidate_edge.to_vertex << " (" << candidate_edge.edge_weight << ")\n";
     return 0;
 }
-
